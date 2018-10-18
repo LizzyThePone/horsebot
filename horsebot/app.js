@@ -10,17 +10,15 @@ fs.exists('./config.json').then(exists => {
     if (!exists) {
         fs.ensureFileSync('./config.json')
         console.log('Created config.json')
-        fs.readJson('./default_config.json').then(defaultConfig => {
-            fs.writeJsonSync('./config.json', defaultConfig);
-            console.log('Wrote default_config.json to config.json');
-            console.log('Add your token into that file now');
-        })
+        var defaultConfig = fs.readJsonSync('./default_config.json')
+        fs.writeJsonSync('./config.json', defaultConfig);
+        console.log('Wrote default_config.json to config.json');
+        console.log('Add your token into that file now');
     } else {
-        fs.readJson('./config.json').then(configFile => {
-            console.log('Config loaded!')
-            config = configFile
-            client.login(config.token)
-        })
+        var configFile = fs.readJsonSync('./config.json')
+        console.log('Config loaded!')
+        config = configFile
+        client.login(config.token)
     }
 })
 

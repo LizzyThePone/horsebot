@@ -1,45 +1,45 @@
-﻿module.exports = (_D, _c, config) => {
+﻿module.exports = (Discord, client, config) => {
 
     var commandMap = new Map()
 
     commandMap.set('ping', {
-        func: m => {
-            const pong = _c.ping
-            const e = new _D.MessageEmbed()
+        func(message){
+            const pong = client.ping
+            const embed = new Discord.MessageEmbed()
                 .setColor(config.embedColor)
                 .setDescription(`Pong! ${pong}ms`)
                 .setFooter('Average of last 3 pings')
-            m.channel.send(e)
+            message.channel.send(embed)
         },
-        check: m => {
+        check(message){
             return true
         },
     })
 
     commandMap.set('eval', {
-        func: m => {
+        func(message){
             try {
-                var evalStr = eval(m.content.replace(config.prefix + "eval ", ""));
-                var e = new _D.MessageEmbed()
+                var evalStr = eval(message.content.replace(config.prefix + "eval ", ""));
+                var embed = new Discord.MessageEmbed()
                     .setTitle("Result:")
                     .setDescription(evalStr)
                     .setColor(config.embedColor);
-                m.channel.send(e);
-            } catch (e) {
-                var e = new _D.MessageEmbed()
+                message.channel.send(embed);
+            } catch (err) {
+                var embed = new Discord.MessageEmbed()
                     .setTitle("Error:")
-                    .setDescription(e.stack)
+                    .setDescription(err.stack)
                     .setColor(config.errorColor);
-                m.channel.send(e);
+                message.channel.send(embed);
             }
         },
-        check: m => {
-            if (m.author.id !== config.owner.id) {
-                var e = new _D.MessageEmbed()
+        check(message){
+            if (message.author.id !== config.owner.id) {
+                var embed = new Discord.MessageEmbed()
                     .setTitle("Unable to run:")
                     .setDescription('That command is restricted to the bot owner!')
                     .setColor(config.errorColor);
-                m.channel.send(e);
+                message.channel.send(embed);
                 return false
             } else {
                 return true
@@ -48,20 +48,20 @@
     })
 
     commandMap.set('prefix', {
-        func: m => {
-            config.prefix = m.content.replace(config.prefix + "prefix ", "");
-            var e = new _D.MessageEmbed()
+        func(message){
+            config.prefix = message.content.replace(config.prefix + "prefix ", "");
+            var embed = new Discord.MessageEmbed()
                 .setTitle(`\u2705 Prefix changed to ${config.prefix}`)
                 .setColor(config.embedColor);
-            m.channel.send(e);
+            message.channel.send(embed);
         },
-        check: m => {
-            if (m.author.id !== config.owner.id) {
-                var e = new _D.MessageEmbed()
+        check(message){
+            if (message.author.id !== config.owner.id) {
+                var embed = new Discord.MessageEmbed()
                     .setTitle("Unable to run:")
                     .setDescription('That command is restricted to the bot owner!')
                     .setColor(config.errorColor);
-                m.channel.send(e);
+                message.channel.send(embed);
                 return false
             } else {
                 return true
@@ -70,46 +70,46 @@
     })
 
     commandMap.set('prune', {
-        func: m => {
-            var deleteAmmount = parseInt(m.content.replace(config.prefix + "prune ", "")) || 100;
+        func(message){
+            var deleteAmmount = parseInt(message.content.replace(config.prefix + "prune ", "")) || 100;
             if (deleteAmmount > 100 || deleteAmmount < 2) {
-                var e = new _D.MessageEmbed()
+                var embed = new Discord.MessageEmbed()
                     .setDescription('Number must be between 2 and 100')
                     .setColor(config.errorColor);
-                m.channel.send(e);
+                message.channel.send(embed);
                 return
             }
-            m.channel.bulkDelete(deleteAmmount).then(messages => {
+            message.channel.bulkDelete(deleteAmmount).then(messages => {
                 deleteAmmount = messages.array().length
-                var e = new _D.MessageEmbed()
+                var embed = new Discord.MessageEmbed()
                     .setTitle(`\u2705 Deleted ${deleteAmmount} messages!`)
                     .setColor(config.embedColor);
-                m.channel.send(e).then(response => {
+                message.channel.send(embed).then(response => {
                     response.delete(3000);
                 });
             })
         },
-        check: m => {
-            if (m.channel.type !== "text") {
-                var e = new _D.MessageEmbed()
+        check(message){
+            if (message.channel.type !== "text") {
+                var embed = new Discord.MessageEmbed()
                     .setTitle("Unable to run:")
                     .setDescription('This can only run in a server!')
                     .setColor(config.errorColor);
-                m.channel.send(e);
+                message.channel.send(embed);
                 return false
-            } else if (!m.channel.permissionsFor(m.member).has('MANAGE_MESSAGES')) {
-                var e = new _D.MessageEmbed()
+            } else if (!message.channel.permissionsFor(message.member).has('MANAGE_MESSAGES')) {
+                var embed = new Discord.MessageEmbed()
                     .setTitle("Unable to run:")
                     .setDescription('You must be able to delete messages here!')
                     .setColor(config.errorColor);
-                m.channel.send(e);
+                message.channel.send(embed);
                 return false
-            } else if (!m.channel.permissionsFor(m.guild.me).has('MANAGE_MESSAGES')) {
-                var e = new _D.MessageEmbed()
+            } else if (!message.channel.permissionsFor(message.guild.me).has('MANAGE_MESSAGES')) {
+                var embed = new Discord.MessageEmbed()
                     .setTitle("Unable to run:")
                     .setDescription('I don\'t have permission to do that here!')
                     .setColor(config.errorColor);
-                m.channel.send(e);
+                message.channel.send(embed);
                 return false
             } else {
                 return true
