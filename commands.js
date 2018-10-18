@@ -1,4 +1,5 @@
-﻿module.exports = (Discord, client, config) => {
+﻿const fs = require('fs-extra');
+module.exports = (Discord, client, config, owner) => {
 
     var commandMap = new Map();
 
@@ -34,7 +35,7 @@
             }
         },
         check(message){
-            if (message.author.id !== config.owner.id) {
+            if (message.author.id !== owner.id) {
                 var embed = new Discord.MessageEmbed()
                     .setTitle("Unable to run:")
                     .setDescription('That command is restricted to the bot owner!')
@@ -50,13 +51,14 @@
     commandMap.set('prefix', {
         func(message){
             config.prefix = message.content.replace(config.prefix + "prefix ", "");
+            fs.writeJsonSync('./config.json', config)
             var embed = new Discord.MessageEmbed()
                 .setTitle(`\u2705 Prefix changed to ${config.prefix}`)
                 .setColor(config.embedColor);
             message.channel.send(embed);
         },
         check(message){
-            if (message.author.id !== config.owner.id) {
+            if (message.author.id !== owner.id) {
                 var embed = new Discord.MessageEmbed()
                     .setTitle("Unable to run:")
                     .setDescription('That command is restricted to the bot owner!')

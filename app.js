@@ -4,7 +4,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const chalk = require('chalk');
 const fs = require('fs-extra');
-var config, commandMap;
+var config, commandMap, owner;
 
 fs.exists('./config.json').then(exists => {
     if (!exists) {
@@ -33,10 +33,10 @@ client.on('ready', () => {
     console.log(chalk.hex(config.lineColor)('-----------------------------'));
     console.log(chalk.hex(config.readyColor)(`Bot started as ${chalk.blue(client.user.tag)}`));
     client.fetchApplication().then(app => {
-        config.owner = app.owner;
-        console.log(chalk.hex(config.readyColor)(`Owner set to ${chalk.blue(config.owner.tag)}`));
+        owner = app.owner;
+        console.log(chalk.hex(config.readyColor)(`Owner set to ${chalk.blue(owner.tag)}`));
         console.log(chalk.hex(config.lineColor)('-----------------------------\n'));
-        commandMap = require('./commands')(Discord, client, config);
+        commandMap = require('./commands')(Discord, client, config, owner);
     });
 });
 
