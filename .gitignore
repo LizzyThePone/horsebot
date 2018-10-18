@@ -262,3 +262,5 @@ __pycache__/
 
 #This has my token, so lets not upload it
 config.json
+#This is my banneduser.config, and I don't want to release it to the public
+bannedusers.json
