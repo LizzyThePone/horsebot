@@ -1,9 +1,7 @@
 ﻿const fs = require('fs-extra');
-module.exports = (Discord, client, config, owner) => {
+module.exports = (Discord, client, config) => {
 
-    var commandMap = client.commandMap;
-
-    commandMap.set('ping', {
+    client.commandMap.set('ping', {
         func(message) {
             const pong = client.ping;
             const embed = new Discord.MessageEmbed()
@@ -17,7 +15,7 @@ module.exports = (Discord, client, config, owner) => {
         },
     });
 
-    commandMap.set('eval', {
+    client.commandMap.set('eval', {
         func(message) {
             try {
                 var evalStr = eval(message.content.replace(config.prefix + "eval ", ""));
@@ -35,7 +33,7 @@ module.exports = (Discord, client, config, owner) => {
             }
         },
         check(message) {
-            if (message.author.id !== owner.id) {
+            if (message.author.id !== client.owner.id) {
                 var embed = new Discord.MessageEmbed()
                     .setTitle("Unable to run:")
                     .setDescription('That command is restricted to the bot owner!')
@@ -48,7 +46,7 @@ module.exports = (Discord, client, config, owner) => {
         }
     });
 
-    commandMap.set('prefix', {
+    client.commandMap.set('prefix', {
         func(message) {
             config.prefix = message.content.replace(config.prefix + "prefix ", "");
             fs.writeJsonSync('./config.json', config);
@@ -71,7 +69,7 @@ module.exports = (Discord, client, config, owner) => {
         }
     });
 
-    commandMap.set('prune', {
+    client.commandMap.set('prune', {
         func(message) {
             var deleteAmmount = parseInt(message.content.replace(config.prefix + "prune ", "")) || 100;
             if (deleteAmmount > 100 || deleteAmmount < 2) {
@@ -119,7 +117,7 @@ module.exports = (Discord, client, config, owner) => {
         }
     });
 
-    commandMap.set('ban', {
+    client.commandMap.set('ban', {
         func(message) {
             var banUser = message.mentions.users.first();
             client.banned.push(banUser.id);
@@ -143,7 +141,7 @@ module.exports = (Discord, client, config, owner) => {
         }
     });
 
-    commandMap.set('unban', {
+    client.commandMap.set('unban', {
         func(message) {
             var banUser = message.mentions.users.first();
             client.banned = client.banned.filter(element => element !== banUser.id);
@@ -166,6 +164,4 @@ module.exports = (Discord, client, config, owner) => {
             }
         }
     });
-
-    return commandMap;
 };
