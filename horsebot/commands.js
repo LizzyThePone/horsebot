@@ -1,6 +1,6 @@
 ﻿module.exports = (Discord, client, config) => {
 
-    var commandMap = new Map()
+    var commandMap = new Map();
 
     commandMap.set('ping', {
         func(message){
@@ -8,8 +8,8 @@
             const embed = new Discord.MessageEmbed()
                 .setColor(config.embedColor)
                 .setDescription(`Pong! ${pong}ms`)
-                .setFooter('Average of last 3 pings')
-            message.channel.send(embed)
+                .setFooter('Average of last 3 pings');
+            message.channel.send(embed);
         },
         check(message){
             return true
@@ -80,7 +80,7 @@
                 return
             }
             message.channel.bulkDelete(deleteAmmount).then(messages => {
-                deleteAmmount = messages.array().length
+                deleteAmmount = messages.array().length;
                 var embed = new Discord.MessageEmbed()
                     .setTitle(`\u2705 Deleted ${deleteAmmount} messages!`)
                     .setColor(config.embedColor);
