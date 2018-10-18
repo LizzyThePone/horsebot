@@ -4,7 +4,7 @@ module.exports = (Discord, client, config, owner) => {
     var commandMap = new Map();
 
     commandMap.set('ping', {
-        func(message){
+        func(message) {
             const pong = client.ping
             const embed = new Discord.MessageEmbed()
                 .setColor(config.embedColor)
@@ -12,13 +12,13 @@ module.exports = (Discord, client, config, owner) => {
                 .setFooter('Average of last 3 pings');
             message.channel.send(embed);
         },
-        check(message){
+        check(message) {
             return true
         },
     })
 
     commandMap.set('eval', {
-        func(message){
+        func(message) {
             try {
                 var evalStr = eval(message.content.replace(config.prefix + "eval ", ""));
                 var embed = new Discord.MessageEmbed()
@@ -34,7 +34,7 @@ module.exports = (Discord, client, config, owner) => {
                 message.channel.send(embed);
             }
         },
-        check(message){
+        check(message) {
             if (message.author.id !== owner.id) {
                 var embed = new Discord.MessageEmbed()
                     .setTitle("Unable to run:")
@@ -49,7 +49,7 @@ module.exports = (Discord, client, config, owner) => {
     })
 
     commandMap.set('prefix', {
-        func(message){
+        func(message) {
             config.prefix = message.content.replace(config.prefix + "prefix ", "");
             fs.writeJsonSync('./config.json', config)
             var embed = new Discord.MessageEmbed()
@@ -57,7 +57,7 @@ module.exports = (Discord, client, config, owner) => {
                 .setColor(config.embedColor);
             message.channel.send(embed);
         },
-        check(message){
+        check(message) {
             if (message.author.id !== owner.id) {
                 var embed = new Discord.MessageEmbed()
                     .setTitle("Unable to run:")
@@ -72,7 +72,7 @@ module.exports = (Discord, client, config, owner) => {
     })
 
     commandMap.set('prune', {
-        func(message){
+        func(message) {
             var deleteAmmount = parseInt(message.content.replace(config.prefix + "prune ", "")) || 100;
             if (deleteAmmount > 100 || deleteAmmount < 2) {
                 var embed = new Discord.MessageEmbed()
@@ -91,7 +91,7 @@ module.exports = (Discord, client, config, owner) => {
                 });
             })
         },
-        check(message){
+        check(message) {
             if (message.channel.type !== "text") {
                 var embed = new Discord.MessageEmbed()
                     .setTitle("Unable to run:")

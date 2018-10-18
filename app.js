@@ -41,7 +41,7 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
-    if (!message.content.startsWith(config.prefix)) return 
+    if (!message.content.startsWith(config.prefix)) return
     var commandName = message.content.toLocaleLowerCase().split(' ')[0].slice(config.prefix.length);
     var command = commandMap.get(commandName);
     if (command) {
