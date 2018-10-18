@@ -136,6 +136,7 @@ module.exports = {
         "no-catch-shadow": "error",
         "no-confusing-arrow": "error",
         "no-console": "off",
+        "no-redeclare": "off",
         "no-continue": "error",
         "no-div-regex": "error",
         "no-duplicate-imports": "error",
@@ -260,7 +261,7 @@ module.exports = {
         "require-jsdoc": "error",
         "require-unicode-regexp": "error",
         "rest-spread-spacing": "error",
-        "semi": "off",
+        "semi": "warn",
         "semi-spacing": "error",
         "semi-style": [
             "error",
