@@ -14,6 +14,7 @@
     "bufferutil": "^3.0.3",
     "chalk": "^2.4.1",
     "erlpack": "github:discordapp/erlpack",
+    "eslint": "^5.7.0",
     "fs-extra": "^7.0.0",
     "libsodium-wrappers": "^0.7.3",
     "node-opus": "^0.2.7",
