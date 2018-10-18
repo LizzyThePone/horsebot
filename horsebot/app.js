@@ -1,72 +1,61 @@
 'use strict';
 
-const _D = require('discord.js');
-const _c = new _D.Client();
+const Discord = require('discord.js');
+const client = new Discord.Client();
 const chalk = require('chalk');
 const fs = require('fs-extra');
 var config, commandMap;
 
 fs.exists('./config.json').then(exists => {
     if (!exists) {
-        fs.ensureFile('./config.json').then(() => {
-            console.log('Created config.json')
-            fs.readJson('./default_config.json').then(defaultConfig => {
-                fs.writeJson('./config.json', defaultConfig).then(() => {
-                    console.log('Wrote default_config.json to config.json')
-                    console.log('Add your token into that file now')
-                    fs.readJson('./config.json').then(configFile => {
-                        config = configFile
-                    })
-                })
-            })
+        fs.ensureFileSync('./config.json')
+        console.log('Created config.json')
+        fs.readJson('./default_config.json').then(defaultConfig => {
+            fs.writeJsonSync('./config.json', defaultConfig);
+            console.log('Wrote default_config.json to config.json');
+            console.log('Add your token into that file now');
         })
     } else {
         fs.readJson('./config.json').then(configFile => {
             console.log('Config loaded!')
             config = configFile
-            _c.login(config.token)
+            client.login(config.token)
         })
     }
 })
 
-
 var logCommand = m => {
-    var denied
-    if (m.denied === true) {
-        denied = "DENIED"
-    } else {
-        denied = "ALLOWED"
-    }
+    var denied = m.denied ? "DENIED" : "ALLOWED"
     console.log(chalk.hex(config.lineColor)('-----------------------------'))
     console.log(chalk.red(`${denied}\nCommand: ${chalk.blue(m.content.toLocaleLowerCase().slice(config.prefix.length))}\nUser: ${chalk.blue(m.author.tag)}\nChannel: ${chalk.blue(m.channel.name || '[DM]')}\nTime: ${chalk.blue(new Date().toString())}`));
     console.log(chalk.hex(config.lineColor)('-----------------------------\n'))
 }
 
-_c.on('ready', () => {
+client.on('ready', () => {
     console.log(chalk.hex(config.lineColor)('-----------------------------'))
-    console.log(chalk.hex(config.readyColor)(`Bot started as ${chalk.blue(_c.user.tag)}`));
-    _c.fetchApplication().then(app => {
+    console.log(chalk.hex(config.readyColor)(`Bot started as ${chalk.blue(client.user.tag)}`));
+    client.fetchApplication().then(app => {
         config.owner = app.owner;
         console.log(chalk.hex(config.readyColor)(`Owner set to ${chalk.blue(config.owner.tag)}`));
         console.log(chalk.hex(config.lineColor)('-----------------------------\n'))
-        commandMap = require('./commands')(_D, _c, config);
+        commandMap = require('./commands')(Discord, client, config);
     });
 });
 
-_c.on('message', m => {
-    if (!m.content.startsWith(config.prefix)) return 
-    var commandName = m.content.toLocaleLowerCase().split(' ')[0].slice(config.prefix.length)
-    var command = commandMap[commandName] 
+client.on('message', message => {
+    if (!message.content.startsWith(config.prefix)) return 
+    var commandName = message.content.toLocaleLowerCase().split(' ')[0].slice(config.prefix.length)
+    var command = commandMap.get(commandName)
     if (command) {
         if (command.check) {
-            if (command.check(m) !== true) {
-                m.denied = true
-                logCommand(m)
+            if (command.check(message) !== true) {
+                message.denied = true
+                logCommand(message)
                 return
             }
         }
-        command.func(m);
-        m.denied = false
-        logCommand(m)
+        command.func(message);
+        message.denied = false
+        logCommand(message)
     }
 });

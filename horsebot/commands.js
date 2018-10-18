@@ -2,7 +2,7 @@
 
     var commandMap = new Map()
 
-    commandMap['ping'] = {
+    commandMap.set('ping', {
         func: m => {
             const pong = _c.ping
             const e = new _D.MessageEmbed()
@@ -14,9 +14,9 @@
         check: m => {
             return true
         },
-    }
+    })
 
-    commandMap['eval'] = {
+    commandMap.set('eval', {
         func: m => {
             try {
                 var evalStr = eval(m.content.replace(config.prefix + "eval ", ""));
@@ -45,9 +45,9 @@
                 return true
             }
         }
-    }
+    })
 
-    commandMap["prefix"] = {
+    commandMap.set('prefix', {
         func: m => {
             config.prefix = m.content.replace(config.prefix + "prefix ", "");
             var e = new _D.MessageEmbed()
@@ -67,9 +67,9 @@
                 return true
             }
         }
-    }
+    })
 
-    commandMap['prune'] = {
+    commandMap.set('prune', {
         func: m => {
             var deleteAmmount = parseInt(m.content.replace(config.prefix + "prune ", "")) || 100;
             if (deleteAmmount > 100 || deleteAmmount < 2) {
@@ -115,7 +115,7 @@
                 return true
             }
         }
-    }
+    })
 
     return commandMap
 }
