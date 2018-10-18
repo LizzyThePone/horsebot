@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2015
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "horsebot", "horsebot\horsebot.njsproj", "{CC23D501-0422-4E53-A852-986D9E624C03}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CC23D501-0422-4E53-A852-986D9E624C03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC23D501-0422-4E53-A852-986D9E624C03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC23D501-0422-4E53-A852-986D9E624C03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC23D501-0422-4E53-A852-986D9E624C03}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0EBE700E-140D-4DCF-8D15-F46887BDC5B9}
+	EndGlobalSection
+EndGlobal
