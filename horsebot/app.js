@@ -4,7 +4,7 @@ const _D = require('discord.js');
 const _c = new _D.Client();
 const chalk = require('chalk');
 const fs = require('fs-extra');
-var config = {};
+var config, commandMap;
 
 fs.exists('./config.json').then(exists => {
     if (!exists) {
@@ -29,8 +29,6 @@ fs.exists('./config.json').then(exists => {
     }
 })
 
-config.owner;
-const commandMap = require('./commands')(_D, _c, config);
 
 var logCommand = m => {
     var denied
@@ -51,20 +49,23 @@ _c.on('ready', () => {
         config.owner = app.owner;
         console.log(chalk.hex(config.readyColor)(`Owner set to ${chalk.blue(config.owner.tag)}`));
         console.log(chalk.hex(config.lineColor)('-----------------------------\n'))
+        commandMap = require('./commands')(_D, _c, config);
     });
 });
 
 _c.on('message', m => {
     if (!m.content.startsWith(config.prefix)) return 
-    if (commandMap[m.content.toLocaleLowerCase().split(' ')[0].slice(config.prefix.length)].check) {
-        if (commandMap[m.content.toLocaleLowerCase().split(' ')[0].slice(config.prefix.length)].check(m) !== true) {
-            m.denied = true
-            logCommand(m)
-            return
+    var commandName = m.content.toLocaleLowerCase().split(' ')[0].slice(config.prefix.length)
+    var command = commandMap[commandName] 
+    if (command) {
+        if (command.check) {
+            if (command.check(m) !== true) {
+                m.denied = true
+                logCommand(m)
+                return
+            }
         }
-    }
-    if (commandMap[m.content.toLocaleLowerCase().split(' ')[0].slice(config.prefix.length)]) {
-        commandMap[m.content.toLocaleLowerCase().split(' ')[0].slice(config.prefix.length)].func(m);
+        command.func(m);
         m.denied = false
         logCommand(m)
     }
