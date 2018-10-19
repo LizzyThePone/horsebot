@@ -1,5 +1,5 @@
 ﻿const fs = require('fs-extra');
-const rp = require('request-promise-any');
+const rp = require('request-promise');
 
 module.exports = (Discord, client, config) => {
 
@@ -24,14 +24,15 @@ module.exports = (Discord, client, config) => {
             var e621Request;
             e621(message.content.replace(config.prefix + "e621 ", "")).then(data => {
                 e621Request = data;
+                const embed = new Discord.MessageEmbed()
+                    .setColor(config.embedColor)
+                    .setTitle('Result:')
+                    .setDescription(`\`${e621Request.tags}\``)
+                    .setImage(e621Request.file_url)
+                    .setURL(`https://e621.net/post/show/${e621Request.id}`)
+                    .setFooter(e621Request.author);
+                message.channel.send(embed);
             });
-            const embed = new Discord.MessageEmbed()
-                .setColor(config.embedColor)
-                .setDescription(e621Request.tags)
-                .setImage(e621Request.file_url)
-                .setURL(`https://e621.net/post/show/${e621Request.id}`)
-                .setFooter(e621Request.author);
-            message.channel.send(embed);
         },
         check(message) {
             if (message.channel.type === 'text' && !message.channel.nsfw) {

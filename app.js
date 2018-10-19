@@ -79,3 +79,11 @@ client.on('message', message => {
         logCommand(message);
     }
 });
+
+process.on('unhandledRejection', (reason, p) => {
+    console.log('Unhandled Rejection at:', p, 'reason:', reason);
+});
+
+process.on('uncaughtException', exception => {
+    console.log(exception);
+});
