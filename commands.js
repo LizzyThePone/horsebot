@@ -1,5 +1,51 @@
 ﻿const fs = require('fs-extra');
+const rp = require('request-promise-any');
+
 module.exports = (Discord, client, config) => {
+
+    var e621 = tags => {
+        var options = {
+            'uri': 'https://e621.net/post/index.json',
+            'method': 'POST',
+            'json': true,
+            'headers': {
+                "User-Agent": "node-e621/1.0 "
+            },
+            'body': {
+                tags,
+                'limit': 200,
+            },
+        };
+        return rp(options).then(e621data => e621data[Math.floor(Math.random() * e621data.length)]);
+    };
+
+    client.commandMap.set('e621', {
+        func(message) {
+            var e621Request;
+            e621(message.content.replace(config.prefix + "e621 ", "")).then(data => {
+                e621Request = data;
+            });
+            const embed = new Discord.MessageEmbed()
+                .setColor(config.embedColor)
+                .setDescription(e621Request.tags)
+                .setImage(e621Request.file_url)
+                .setURL(`https://e621.net/post/show/${e621Request.id}`)
+                .setFooter(e621Request.author);
+            message.channel.send(embed);
+        },
+        check(message) {
+            if (message.channel.type === 'text' && !message.channel.nsfw) {
+                var embed = new Discord.MessageEmbed()
+                    .setTitle("Unable to run:")
+                    .setDescription('This can only be run in NSFW channels ore direct messages!')
+                    .setColor(config.errorColor);
+                message.channel.send(embed);
+                return false;
+            } else {
+                return true;
+            }
+        },
+    });
 
     client.commandMap.set('ping', {
         func(message) {
