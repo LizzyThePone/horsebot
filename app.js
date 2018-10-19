@@ -5,32 +5,35 @@ const client = new Discord.Client();
 const chalk = require('chalk');
 const fs = require('fs-extra');
 client.commandMap = new Map();
+var configLocation = './config/config.json';
+var defaultConfigLocation = './config/default_config.json';
+var bansLocation = './config/bannedusers.json';
 var config;
 
-fs.exists('./config.json').then(exists => {
+fs.exists(configLocation).then(exists => {
     if (!exists) {
-        fs.ensureFileSync('./config.json');
+        fs.ensureFileSync(configLocation);
         console.log('Created config.json');
-        var defaultConfig = fs.readJsonSync('./default_config.json');
-        fs.writeJsonSync('./config.json', defaultConfig);
+        var defaultConfig = fs.readJsonSync(defaultConfigLocation);
+        fs.writeJsonSync(configLocation, defaultConfig);
         console.log('Wrote default_config.json to config.json');
         console.log('Add your token into that file now');
     } else {
-        var configFile = fs.readJsonSync('./config.json');
+        var configFile = fs.readJsonSync(configLocation);
         console.log('Config loaded!');
         config = configFile;
         client.login(config.token);
     }
 });
 
-fs.exists('./bannedusers.json').then(exists => {
+fs.exists(bansLocation).then(exists => {
     if (!exists) {
-        fs.ensureFileSync('./bannedusers.json');
+        fs.ensureFileSync(bansLocation);
         console.log('Created bannedusers.json');
         client.banned = [];
-        fs.writeJsonSync('./bannedusers.json', client.banned);
+        fs.writeJsonSync(bansLocation, client.banned);
     } else {
-        client.banned = fs.readJsonSync('./bannedusers.json');
+        client.banned = fs.readJsonSync(bansLocation);
         console.log('Bans loaded!');
     }
 });
@@ -38,7 +41,7 @@ fs.exists('./bannedusers.json').then(exists => {
 var logCommand = message => {
     var denied = message.denied ? "DENIED" : "ALLOWED";
     console.log(chalk.hex(config.lineColor)('-----------------------------'));
-    console.log(chalk.red(`${denied}\nCommand: ${chalk.blue(message.commandName)}\nUser: ${chalk.blue(message.author.tag)}\nChannel: ${chalk.blue(message.channel.name || '[DM]')}\nTime: ${chalk.blue(new Date().toString())}`));
+    console.log(chalk.red(`${denied}\nCommand: ${chalk.blue(message.commandName)}\nUser: ${chalk.blue(message.author.tag)}\n${message.guild ? `Server: (${chalk.blue(message.guild.id)}) ${chalk.blue(message.guild.name)}\n` : ""}Channel: ${chalk.blue(message.channel.name || '[DM]')}\nTime: ${chalk.blue(new Date().toString())}`));
     console.log(chalk.hex(config.lineColor)('-----------------------------\n'));
 };
 
@@ -49,7 +52,7 @@ client.on('ready', () => {
         client.owner = app.owner;
         console.log(chalk.hex(config.readyColor)(`Owner set to ${chalk.blue(client.owner.tag)}`));
         console.log(chalk.hex(config.lineColor)('-----------------------------\n'));
-        require('./commands')(Discord, client, config);
+        require('./modules/commands')(Discord, client, config);
     });
 });
 
