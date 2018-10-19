@@ -49,10 +49,21 @@ client.on('ready', () => {
     console.log(chalk.hex(config.lineColor)('-----------------------------'));
     console.log(chalk.hex(config.readyColor)(`Bot started as ${chalk.blue(client.user.tag)}`));
     client.fetchApplication().then(app => {
+        process.on('uncaughtException', exception => {
+            var embed = new Discord.MessageEmbed()
+                .setTitle("Error:")
+                .setDescription(exception.stack)
+                .setColor(config.errorColor);
+            app.owner.send(embed);
+        });
         client.owner = app.owner;
         console.log(chalk.hex(config.readyColor)(`Owner set to ${chalk.blue(client.owner.tag)}`));
         console.log(chalk.hex(config.lineColor)('-----------------------------\n'));
         require('./modules/commands')(Discord, client, config);
+        var embed = new Discord.MessageEmbed()
+            .setDescription(`Started at ${new Date()}`)
+            .setColor(config.embedColor);
+        app.owner.send(embed);
     });
 });
 
@@ -81,12 +92,4 @@ client.on('message', message => {
         message.denied = false;
         logCommand(message);
     }
-});
-
-process.on('unhandledRejection', (reason, p) => {
-    console.log('Unhandled Rejection at:', p, 'reason:', reason);
-});
-
-process.on('uncaughtException', exception => {
-    console.log(exception);
 });

@@ -93,6 +93,28 @@ module.exports = (Discord, client, config) => {
         }
     });
 
+    client.commandMap.set('stop', {
+        func() {
+            var embed = new Discord.MessageEmbed()
+                .setTitle("Stopping bot!")
+                .setColor(config.errorColor);
+            client.owner.send(embed);
+            process.exit();
+        },
+        check(message) {
+            if (message.author.id !== client.owner.id) {
+                var embed = new Discord.MessageEmbed()
+                    .setTitle("Unable to run:")
+                    .setDescription('That command is restricted to the bot owner!')
+                    .setColor(config.errorColor);
+                message.channel.send(embed);
+                return false;
+            } else {
+                return true;
+            }
+        }
+    });
+
     client.commandMap.set('prefix', {
         func(message) {
             config.prefix = message.content.replace(config.prefix + "prefix ", "");

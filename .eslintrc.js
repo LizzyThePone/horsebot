@@ -186,7 +186,7 @@ module.exports = {
         "no-path-concat": "error",
         "no-plusplus": "error",
         "no-process-env": "error",
-        "no-process-exit": "error",
+        "no-process-exit": "off",
         "no-proto": "error",
         "no-prototype-builtins": "error",
         "no-restricted-globals": "error",
