@@ -1,15 +1,6 @@
 const rp = require('request-promise');
 const isurl = require('is-url');
-const progress
-
-var exec = require('child_process').exec;
-exec('java -jar lavalink.jar', (error, stdout, stderr) => {
-    console.log('stdout: ' + stdout);
-    console.log('stderr: ' + stderr);
-    if (error !== null) {
-        console.log('exec error: ' + error);
-    }
-});
+const progress = require('progress');
 
 module.exports = (Discord, client, config) => {
 
@@ -23,13 +14,10 @@ module.exports = (Discord, client, config) => {
             "password": "youshallnotpass"
         }
     ];
-    var manager;
-    setTimeout(() => {
-        manager = new PlayerManager(client, nodes, {
-            "user": client.user.id,
-            "shards": 0
-        });
-    }, 10000);
+    var manager = new PlayerManager(client, nodes, {
+        "user": client.user.id,
+        "shards": 0
+    });
 
     var getSongs = string => {
         var options = {
