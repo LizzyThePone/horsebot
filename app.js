@@ -8,6 +8,7 @@ client.commandMap = new Map();
 var configLocation = './config/config.json';
 var defaultConfigLocation = './config/default_config.json';
 var bansLocation = './config/bannedusers.json';
+var guildsLocation = './config/guilds.json';
 var config;
 
 fs.exists(configLocation).then(exists => {
@@ -35,6 +36,18 @@ fs.exists(bansLocation).then(exists => {
     } else {
         client.banned = fs.readJsonSync(bansLocation);
         console.log('Bans loaded!');
+    }
+});
+
+fs.exists(guildsLocation).then(exists => {
+    if (!exists) {
+        fs.ensureFileSync(guildsLocation);
+        console.log('Created guilds.json');
+        client.guildConfig = new Map();
+        fs.writeJsonSync(guildsLocation, client.banned);
+    } else {
+        client.guildConfig = fs.readJsonSync(guildsLocation);
+        console.log('Guilds loaded!');
     }
 });
 

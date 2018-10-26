@@ -46,6 +46,7 @@ module.exports = (Discord, client, config) => {
                 return true;
             }
         },
+        help: "Searches e621 and pulls a random result from the first 200"
     });
 
     client.commandMap.set('ping', {
@@ -60,6 +61,7 @@ module.exports = (Discord, client, config) => {
         check() {
             return true;
         },
+        help: "Check my ping. Or play ping pong."
     });
 
     client.commandMap.set('invite', {
@@ -77,6 +79,7 @@ module.exports = (Discord, client, config) => {
         check() {
             return true;
         },
+        help: "Generate an invite for me <3"
     });
 
     client.commandMap.set('eval', {
@@ -107,7 +110,8 @@ module.exports = (Discord, client, config) => {
             } else {
                 return true;
             }
-        }
+        },
+        help: "Nuthing as far as you're concerned :3 {owner only}"
     });
 
     client.commandMap.set('shutdown', {
@@ -129,7 +133,8 @@ module.exports = (Discord, client, config) => {
             } else {
                 return true;
             }
-        }
+        },
+        help: "Plez dun hurt me ;-; {owner only}"
     });
 
     client.commandMap.set('prefix', {
@@ -152,62 +157,8 @@ module.exports = (Discord, client, config) => {
             } else {
                 return true;
             }
-        }
-    });
-
-    client.commandMap.set('prune', {
-        func(message) {
-            var deleteAmmount = parseInt(message.content.replace(config.prefix + "prune ", "")) || 100;
-            if (isNaN(deleteAmmount)) {
-                var embed = new Discord.RichEmbed()
-                    .setDescription('Must be a number!')
-                    .setColor(config.errorColor);
-                message.channel.send(embed);
-                return;
-            }
-            if (deleteAmmount > 100 || deleteAmmount < 2) {
-                var embed = new Discord.RichEmbed()
-                    .setDescription('Number must be between 2 and 100')
-                    .setColor(config.errorColor);
-                message.channel.send(embed);
-                return;
-            }
-            message.channel.bulkDelete(deleteAmmount).then(messages => {
-                deleteAmmount = messages.array().length;
-                var embed = new Discord.RichEmbed()
-                    .setTitle(`\u2705 Deleted ${deleteAmmount} messages!`)
-                    .setColor(config.embedColor);
-                message.channel.send(embed).then(response => {
-                    response.delete(3000);
-                });
-            });
         },
-        check(message) {
-            if (message.channel.type !== "text") {
-                var embed = new Discord.RichEmbed()
-                    .setTitle("Unable to run:")
-                    .setDescription('This can only run in a server!')
-                    .setColor(config.errorColor);
-                message.channel.send(embed);
-                return false;
-            } else if (!message.channel.permissionsFor(message.member).has('MANAGE_MESSAGES')) {
-                var embed = new Discord.RichEmbed()
-                    .setTitle("Unable to run:")
-                    .setDescription('You must be able to delete messages here!')
-                    .setColor(config.errorColor);
-                message.channel.send(embed);
-                return false;
-            } else if (!message.channel.permissionsFor(message.guild.me).has('MANAGE_MESSAGES')) {
-                var embed = new Discord.RichEmbed()
-                    .setTitle("Unable to run:")
-                    .setDescription('I don\'t have permission to do that here!')
-                    .setColor(config.errorColor);
-                message.channel.send(embed);
-                return false;
-            } else {
-                return true;
-            }
-        }
+        help: "Change my prefix {owner only}"
     });
 
     client.commandMap.set('ban', {
@@ -231,7 +182,8 @@ module.exports = (Discord, client, config) => {
             } else {
                 return true;
             }
-        }
+        },
+        help: "Ban user from me for any server {owner only}"
     });
 
     client.commandMap.set('unban', {
@@ -255,6 +207,7 @@ module.exports = (Discord, client, config) => {
             } else {
                 return true;
             }
-        }
+        },
+        help: "Unban user from me for any server {owner only}"
     });
 };

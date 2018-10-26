@@ -131,6 +131,7 @@ module.exports = (Discord, client, config) => {
                 return true;
             }
         },
+        help: "Search youtube and play the first result, or play from youtube playlist, video, stream, or soundcloud link"
     });
 
     client.commandMap.set('skip', {
@@ -154,6 +155,7 @@ module.exports = (Discord, client, config) => {
                 return true;
             }
         },
+        help: "Skip the current song"
     });
 
     client.commandMap.set('stop', {
@@ -178,6 +180,7 @@ module.exports = (Discord, client, config) => {
                 return true;
             }
         },
+        help: "Stop playing and remove everything from the queue."
     });
 
     client.commandMap.set('volume', {
@@ -197,7 +200,7 @@ module.exports = (Discord, client, config) => {
                 message.channel.send(embed);
                 return;
             }
-            var barf = Math.round(volume/5)
+            var barf = Math.round(volume / 5);
             var embed = new Discord.RichEmbed()
                 .setTitle(`Set volume to ${volume}`)
                 .setDescription(`[${'#'.repeat(barf)}${'='.repeat(20 - barf)}]`)
@@ -223,5 +226,6 @@ module.exports = (Discord, client, config) => {
                 return true;
             }
         },
+        help: "Set the volume of the bot {2 - 100}"
     });
 };
