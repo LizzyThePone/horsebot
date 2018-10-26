@@ -24,7 +24,7 @@ module.exports = (Discord, client, config) => {
             var e621Request;
             e621(message.content.replace(config.prefix + "e621 ", "")).then(data => {
                 e621Request = data;
-                const embed = new Discord.MessageEmbed()
+                const embed = new Discord.RichEmbed()
                     .setColor(config.embedColor)
                     .setTitle('Result:')
                     .setDescription(`\`${e621Request.tags}\``)
@@ -36,7 +36,7 @@ module.exports = (Discord, client, config) => {
         },
         check(message) {
             if (message.channel.type === 'text' && !message.channel.nsfw) {
-                var embed = new Discord.MessageEmbed()
+                var embed = new Discord.RichEmbed()
                     .setTitle("Unable to run:")
                     .setDescription('This can only be run in NSFW channels ore direct messages!')
                     .setColor(config.errorColor);
@@ -51,7 +51,7 @@ module.exports = (Discord, client, config) => {
     client.commandMap.set('ping', {
         func(message) {
             const pong = client.ping;
-            const embed = new Discord.MessageEmbed()
+            const embed = new Discord.RichEmbed()
                 .setColor(config.embedColor)
                 .setDescription(`Pong! ${pong}ms`)
                 .setFooter('Average of last 3 pings');
@@ -62,17 +62,34 @@ module.exports = (Discord, client, config) => {
         },
     });
 
+    client.commandMap.set('invite', {
+        func(message) {
+            client.generateInvite(8)
+                .then(link => {
+                    const embed = new Discord.RichEmbed()
+                        .setColor(config.embedColor)
+                        .setTitle(`Take me!`)
+                        .setFooter('made with \u2764 by \u{1D4DB}\u{1D4F2}\u{1D503}\u{1D503}\u{1D502}')
+                        .setURL(link);
+                    message.channel.send(embed);
+                });
+        },
+        check() {
+            return true;
+        },
+    });
+
     client.commandMap.set('eval', {
         func(message) {
             try {
                 var evalStr = eval(message.content.replace(config.prefix + "eval ", ""));
-                var embed = new Discord.MessageEmbed()
+                var embed = new Discord.RichEmbed()
                     .setTitle("Result:")
                     .setDescription(evalStr)
                     .setColor(config.embedColor);
                 message.channel.send(embed);
             } catch (err) {
-                var embed = new Discord.MessageEmbed()
+                var embed = new Discord.RichEmbed()
                     .setTitle("Error:")
                     .setDescription(err.stack)
                     .setColor(config.errorColor);
@@ -81,7 +98,7 @@ module.exports = (Discord, client, config) => {
         },
         check(message) {
             if (message.author.id !== client.owner.id) {
-                var embed = new Discord.MessageEmbed()
+                var embed = new Discord.RichEmbed()
                     .setTitle("Unable to run:")
                     .setDescription('That command is restricted to the bot owner!')
                     .setColor(config.errorColor);
@@ -93,9 +110,9 @@ module.exports = (Discord, client, config) => {
         }
     });
 
-    client.commandMap.set('stop', {
+    client.commandMap.set('shutdown', {
         func() {
-            var embed = new Discord.MessageEmbed()
+            var embed = new Discord.RichEmbed()
                 .setTitle("Stopping bot!")
                 .setColor(config.errorColor);
             client.owner.send(embed);
@@ -103,7 +120,7 @@ module.exports = (Discord, client, config) => {
         },
         check(message) {
             if (message.author.id !== client.owner.id) {
-                var embed = new Discord.MessageEmbed()
+                var embed = new Discord.RichEmbed()
                     .setTitle("Unable to run:")
                     .setDescription('That command is restricted to the bot owner!')
                     .setColor(config.errorColor);
@@ -119,14 +136,14 @@ module.exports = (Discord, client, config) => {
         func(message) {
             config.prefix = message.content.replace(config.prefix + "prefix ", "");
             fs.writeJsonSync('./config.json', config);
-            var embed = new Discord.MessageEmbed()
+            var embed = new Discord.RichEmbed()
                 .setTitle(`\u2705 Prefix changed to ${config.prefix}`)
                 .setColor(config.embedColor);
             message.channel.send(embed);
         },
         check(message) {
             if (message.author.id !== client.owner.id) {
-                var embed = new Discord.MessageEmbed()
+                var embed = new Discord.RichEmbed()
                     .setTitle("Unable to run:")
                     .setDescription('That command is restricted to the bot owner!')
                     .setColor(config.errorColor);
@@ -141,8 +158,15 @@ module.exports = (Discord, client, config) => {
     client.commandMap.set('prune', {
         func(message) {
             var deleteAmmount = parseInt(message.content.replace(config.prefix + "prune ", "")) || 100;
+            if (isNaN(deleteAmmount)) {
+                var embed = new Discord.RichEmbed()
+                    .setDescription('Must be a number!')
+                    .setColor(config.errorColor);
+                message.channel.send(embed);
+                return;
+            }
             if (deleteAmmount > 100 || deleteAmmount < 2) {
-                var embed = new Discord.MessageEmbed()
+                var embed = new Discord.RichEmbed()
                     .setDescription('Number must be between 2 and 100')
                     .setColor(config.errorColor);
                 message.channel.send(embed);
@@ -150,7 +174,7 @@ module.exports = (Discord, client, config) => {
             }
             message.channel.bulkDelete(deleteAmmount).then(messages => {
                 deleteAmmount = messages.array().length;
-                var embed = new Discord.MessageEmbed()
+                var embed = new Discord.RichEmbed()
                     .setTitle(`\u2705 Deleted ${deleteAmmount} messages!`)
                     .setColor(config.embedColor);
                 message.channel.send(embed).then(response => {
@@ -160,21 +184,21 @@ module.exports = (Discord, client, config) => {
         },
         check(message) {
             if (message.channel.type !== "text") {
-                var embed = new Discord.MessageEmbed()
+                var embed = new Discord.RichEmbed()
                     .setTitle("Unable to run:")
                     .setDescription('This can only run in a server!')
                     .setColor(config.errorColor);
                 message.channel.send(embed);
                 return false;
             } else if (!message.channel.permissionsFor(message.member).has('MANAGE_MESSAGES')) {
-                var embed = new Discord.MessageEmbed()
+                var embed = new Discord.RichEmbed()
                     .setTitle("Unable to run:")
                     .setDescription('You must be able to delete messages here!')
                     .setColor(config.errorColor);
                 message.channel.send(embed);
                 return false;
             } else if (!message.channel.permissionsFor(message.guild.me).has('MANAGE_MESSAGES')) {
-                var embed = new Discord.MessageEmbed()
+                var embed = new Discord.RichEmbed()
                     .setTitle("Unable to run:")
                     .setDescription('I don\'t have permission to do that here!')
                     .setColor(config.errorColor);
@@ -191,14 +215,14 @@ module.exports = (Discord, client, config) => {
             var banUser = message.mentions.users.first();
             client.banned.push(banUser.id);
             fs.writeJsonSync('./bannedusers.json', client.banned);
-            var embed = new Discord.MessageEmbed()
+            var embed = new Discord.RichEmbed()
                 .setDescription(`Banned ${banUser}`)
                 .setColor(config.errorColor);
             message.channel.send(embed);
         },
         check(message) {
             if (message.author.id !== client.owner.id) {
-                var embed = new Discord.MessageEmbed()
+                var embed = new Discord.RichEmbed()
                     .setTitle("Unable to run:")
                     .setDescription('That command is restricted to the bot owner!')
                     .setColor(config.errorColor);
@@ -215,14 +239,14 @@ module.exports = (Discord, client, config) => {
             var banUser = message.mentions.users.first();
             client.banned = client.banned.filter(element => element !== banUser.id);
             fs.writeJsonSync('./bannedusers.json', client.banned);
-            var embed = new Discord.MessageEmbed()
+            var embed = new Discord.RichEmbed()
                 .setDescription(`Unbanned ${banUser}`)
                 .setColor(config.errorColor);
             message.channel.send(embed);
         },
         check(message) {
             if (message.author.id !== client.owner.id) {
-                var embed = new Discord.MessageEmbed()
+                var embed = new Discord.RichEmbed()
                     .setTitle("Unable to run:")
                     .setDescription('That command is restricted to the bot owner!')
                     .setColor(config.errorColor);

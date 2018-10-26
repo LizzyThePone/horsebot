@@ -50,7 +50,8 @@ client.on('ready', () => {
     console.log(chalk.hex(config.readyColor)(`Bot started as ${chalk.blue(client.user.tag)}`));
     client.fetchApplication().then(app => {
         process.on('uncaughtException', exception => {
-            var embed = new Discord.MessageEmbed()
+            console.error(exception);
+            var embed = new Discord.RichEmbed()
                 .setTitle("Error:")
                 .setDescription(exception.stack)
                 .setColor(config.errorColor);
@@ -60,7 +61,8 @@ client.on('ready', () => {
         console.log(chalk.hex(config.readyColor)(`Owner set to ${chalk.blue(client.owner.tag)}`));
         console.log(chalk.hex(config.lineColor)('-----------------------------\n'));
         require('./modules/commands')(Discord, client, config);
-        var embed = new Discord.MessageEmbed()
+        require('./modules/music')(Discord, client, config);
+        var embed = new Discord.RichEmbed()
             .setDescription(`Started at ${new Date()}`)
             .setColor(config.embedColor);
         app.owner.send(embed);
@@ -92,4 +94,7 @@ client.on('message', message => {
         message.denied = false;
         logCommand(message);
     }
+});
+process.on('unhandledRejection', reason => {
+    console.log('Unhandled Rejection at:', reason.stack || reason);
 });

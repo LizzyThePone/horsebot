@@ -269,7 +269,7 @@ module.exports = {
         ],
         "sort-imports": "error",
         "sort-keys": [
-            "error",
+            "off",
             "desc"
         ],
         "sort-vars": "off",
