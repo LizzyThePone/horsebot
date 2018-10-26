@@ -235,7 +235,7 @@ module.exports = (Discord, client, config) => {
             } else if (!message.guild.player || message.guild.queue.length <= 0) {
                 const embed = new Discord.RichEmbed()
                     .setColor(config.errorColor)
-                    .setTitle('Nothing to skip!');
+                    .setTitle('Nothing is playing!');
                 message.channel.send(embed);
                 return false;
             } else {
