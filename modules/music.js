@@ -1,5 +1,6 @@
 const rp = require('request-promise');
 const isurl = require('is-url');
+const progress
 
 var exec = require('child_process').exec;
 exec('java -jar lavalink.jar', (error, stdout, stderr) => {
@@ -209,8 +210,16 @@ module.exports = (Discord, client, config) => {
                 message.channel.send(embed);
                 return;
             }
+            var bar = new progress('[:bar]', {
+                complete: '#',
+                incomplete: '=',
+                width: 10,
+                total: 100,
+                curr: volume
+              })
             var embed = new Discord.RichEmbed()
-                .setDescription(`Set volume to ${volume}`)
+                .setTitle(`Set volume to ${volume}`)
+                .setDescription(bar)
                 .setColor(config.embedColor);
             message.channel.send(embed);
             message.guild.volume = volume;
