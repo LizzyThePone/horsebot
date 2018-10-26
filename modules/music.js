@@ -56,7 +56,7 @@ module.exports = (Discord, client, config) => {
             'host': "localhost"
         });
         var track = guild.queue[0];
-        await guild.player.volume(50);
+        await guild.player.volume(guild.volume || 50);
         await guild.player.play(track.track);
         await guild.player.once("error", error => console.error(error));
         await guild.player.once("end", () => {
@@ -213,6 +213,7 @@ module.exports = (Discord, client, config) => {
                 .setDescription(`Set volume to ${volume}`)
                 .setColor(config.embedColor);
             message.channel.send(embed);
+            message.guild.volume = volume;
             message.guild.player.volume(volume);
         },
         check(message) {
