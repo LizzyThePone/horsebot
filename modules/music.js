@@ -197,8 +197,7 @@ module.exports = (Discord, client, config) => {
                 message.channel.send(embed);
                 return;
             }
-            var barf = volume/20
-            barf.round()
+            var barf = Math.round(volume/20)
             var embed = new Discord.RichEmbed()
                 .setTitle(`Set volume to ${volume}`)
                 .setDescription(`[${'#'.repeat(barf)}${'='.repeat(20 - barf)}]`)
