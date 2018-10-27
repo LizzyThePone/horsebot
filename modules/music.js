@@ -197,8 +197,10 @@ module.exports = (Discord, client, config) => {
                 message.channel.send(embed);
                 return;
             }
+            var barf = (volume / 20).round()
             var embed = new Discord.RichEmbed()
                 .setTitle(`Set volume to ${volume}`)
+                .setDescription(`[${'#'.repeat(barf)}${'='.repeat(20 - barf)}]`)
                 .setColor(config.embedColor);
             message.channel.send(embed);
             message.guild.volume = volume;
