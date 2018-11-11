@@ -210,4 +210,21 @@ module.exports = (Discord, client, config) => {
         },
         help: "Unban user from me for any server {owner only}"
     });
+
+    client.commandMap.set('help', {
+        func(message) {
+            const pong = client.ping;
+            const embed = new Discord.RichEmbed()
+                .setColor(config.embedColor)
+                .setFooter('Average of last 3 pings');
+                client.commandMap.array.forEach((element, key) => {
+                    embed.addField(key, element.help);
+                });
+            message.channel.send(embed);
+        },
+        check() {
+            return true;
+        },
+        help: "Get a list of commands and help info."
+    });
 };
