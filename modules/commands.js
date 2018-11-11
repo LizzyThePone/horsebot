@@ -217,7 +217,7 @@ module.exports = (Discord, client, config) => {
             const embed = new Discord.RichEmbed()
                 .setColor(config.embedColor)
                 .setFooter('Average of last 3 pings');
-                client.commandMap.array.forEach((element, key) => {
+                client.commandMap.array().forEach((element, key) => {
                     embed.addField(key, element.help);
                 });
             message.channel.send(embed);
